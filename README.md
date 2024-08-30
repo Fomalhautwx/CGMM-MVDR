@@ -4,7 +4,7 @@ A MATLAB implementation of the GSC in Verilog style. Use main.m to deploy the be
 
 <img src="images/image-20240818154330223.png" alt="image-20240818154330223" style="zoom:25%;" />
 
-I used Pyroomacoustics to generate a narrowband Gaussian test signal with a interference signal and white noise. The sampling rate was 8kHz, with the target signal source in the broadside and the interference source located at 53 degrees away. The target signal was in the frequency range of 960-1040Hz, while the interference was in the range of 760-840Hz (the spectrum of a channel of the test signal is as shown in the above figure). The Signal-to-Interference Ratio (SIR) was set to 10dB (it was mentioned in Hoshuyama's paper that a low SIR would lead to poor Beamforming (BM) performance, which was indeed the case in the actual experiment). Below is the output signal of the BM.
+I used [Pyroomacoustics](https://pypi.org/project/pyroomacoustics/) to generate a narrowband Gaussian test signal with a interference signal and white noise. The sampling rate was 8kHz, with the target signal source in the broadside and the interference source located at 53 degrees away. The target signal was in the frequency range of 960-1040Hz, while the interference was in the range of 760-840Hz (the spectrum of a channel of the test signal is as shown in the above figure). The Signal-to-Interference Ratio (SIR) was set to 10dB (it was mentioned in Hoshuyama's paper that a low SIR would lead to poor Beamforming (BM) performance, which was indeed the case in the actual experiment). Below is the output signal of the BM.
 
 <img src="images/block效果.png" style="zoom:25%;" />
 
