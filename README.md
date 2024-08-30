@@ -1,75 +1,27 @@
-<header>
+# Implementation of a robust GSC with CCAF and NCAF(Hoshuyama et. al., 1999)
 
-<!--
-  <<< Author notes: Course header >>>
-  Include a 1280×640 image, course title in sentence case, and a concise description in emphasis.
-  In your repository settings: enable template repository, add your 1280×640 social image, auto delete head branches.
-  Add your open source license, GitHub uses MIT license.
--->
+A MATLAB implementation of the GSC in Verilog style. Use main.m to deploy the beamformer, use doatest.m to test the spatial response, use PowerInspection.m to inspect the narrowband power relationship.
 
-# Introduction to GitHub
+<img src="C:\Users\Lu Jizhe\AppData\Roaming\Typora\typora-user-images\image-20240818154330223.png" alt="image-20240818154330223" style="zoom:25%;" />
 
-_Get started using GitHub in less than an hour._
+I used Pyroomacoustics to generate a narrowband Gaussian test signal with a interference signal and white noise. The sampling rate was 8kHz, with the target signal source in the broadside and the interference source located at 53 degrees away. The target signal was in the frequency range of 960-1040Hz, while the interference was in the range of 760-840Hz (the spectrum of a channel of the test signal is as shown in the above figure). The Signal-to-Interference Ratio (SIR) was set to 10dB (it was mentioned in Hoshuyama's paper that a low SIR would lead to poor Beamforming (BM) performance, which was indeed the case in the actual experiment). Below is the output signal of the BM.
 
-</header>
+<img src="C:\Users\Lu Jizhe\Desktop\MVDr笔记\block效果.png" style="zoom:25%;" />
 
-<!--
-  <<< Author notes: Step 1 >>>
-  Choose 3-5 steps for your course.
-  The first step is always the hardest, so pick something easy!
-  Link to docs.github.com for further explanations.
-  Encourage users to open new tabs for steps!
--->
+It can be seen that by 220ms, the Blocking Matrix(BM) has converged (approximately 600 rounds of parameter iteration), and the frequency band of the target signal is greatly weakened. From the spectral analysis of the signal after convergence, the power within the frequency band of the target signal significantly attenuates after passing through the blocking matrix, while the interference signal remains relatively unchanged. At this point, the power ratio between the interference signal and the target signal is approximately 16.6dB, with the target signal attenuated by 26dB. However, there is still leakage of the target signal.
 
-## Step 1: Create a branch
+<img src="C:\Users\Lu Jizhe\Desktop\MVDr笔记\powerspectrum.png" style="zoom:48%;" />
 
-_Welcome to "Introduction to GitHub"! :wave:_
+The interference after blocking is processed through Multiple-input Canceller (MC) to obtain the enhanced output, as shown in the figure. The first abrupt change marks the end of BM iteration and the start of MC iteration. It can be observed that at this point, the interference signal begins to attenuate, and the background white noise significantly diminishes. Subsequently, after parameter updates in MC, the output signal almost eliminates the interference signal. From the power spectrum estimation, it is also evident that at this stage, the noise signal is nearly submerged in the background noise, with the power of the target signal remaining almost unchanged (acceptable target signal cancellation). The power ratio between the target signal and the interference signal is 27.7dB, with the interference signal attenuated by 19.5dB (corresponds to the original paper's results). This approach is relatively successful in scenarios involving simple narrowband signals and high Signal-to-Interference Ratios (SIR).
 
-**What is GitHub?**: GitHub is a collaboration platform that uses _[Git](https://docs.github.com/get-started/quickstart/github-glossary#git)_ for versioning. GitHub is a popular place to share and contribute to [open-source](https://docs.github.com/get-started/quickstart/github-glossary#open-source) software.
-<br>:tv: [Video: What is GitHub?](https://www.youtube.com/watch?v=pBy1zgt0XPc)
+<img src="C:\Users\Lu Jizhe\Desktop\MVDr笔记\output效果.png" style="zoom: 25%;" />
 
-**What is a repository?**: A _[repository](https://docs.github.com/get-started/quickstart/github-glossary#repository)_ is a project containing files and folders. A repository tracks versions of files and folders. For more information, see "[About repositories](https://docs.github.com/en/repositories/creating-and-managing-repositories/about-repositories)" from GitHub Docs.
+<img src="C:\Users\Lu Jizhe\Desktop\MVDr笔记\outputPSpectrum.png" style="zoom:48%;" />
 
-**What is a branch?**: A _[branch](https://docs.github.com/en/get-started/quickstart/github-glossary#branch)_ is a parallel version of your repository. By default, your repository has one branch named `main` and it is considered to be the definitive branch. Creating additional branches allows you to copy the `main` branch of your repository and safely make any changes without disrupting the main project. Many people use branches to work on specific features without affecting any other parts of the project.
+The spatial response of the beamformer. Generate a batch of test signals with target narrowband signal(centered 1000Hz) impinging from all directions, and measure the stable output signals' average power. The result shows that the passband is within $\pm10^\circ$, which proves the spatial robustness.
 
-Branches allow you to separate your work from the `main` branch. In other words, everyone's work is safe while you contribute. For more information, see "[About branches](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-branches)".
+<img src="C:\Users\Lu Jizhe\Desktop\MVDr笔记\GSCbeampattern.png" style="zoom:48%;" />
 
-**What is a profile README?**: A _[profile README](https://docs.github.com/account-and-profile/setting-up-and-managing-your-github-profile/customizing-your-profile/managing-your-profile-readme)_ is essentially an "About me" section on your GitHub profile where you can share information about yourself with the community on GitHub.com. GitHub shows your profile README at the top of your profile page. For more information, see "[Managing your profile README](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-github-profile/customizing-your-profile/managing-your-profile-readme)".
+## REFERENCE
 
-![profile-readme-example](/images/profile-readme-example.png)
-
-### :keyboard: Activity: Your first branch
-
-1. Open a new browser tab and navigate to your newly made repository. Then, work on the steps in your second tab while you read the instructions in this tab.
-2. Navigate to the **< > Code** tab in the header menu of your repository.
-
-   ![code-tab](/images/code-tab.png)
-
-3. Click on the **main** branch drop-down.
-
-   ![main-branch-dropdown](/images/main-branch-dropdown.png)
-
-4. In the field, name your branch `my-first-branch`. In this case, the name must be `my-first-branch` to trigger the course workflow.
-5. Click **Create branch: my-first-branch** to create your branch.
-
-   ![create-branch-button](/images/create-branch-button.png)
-
-   The branch will automatically switch to the one you have just created.
-   The **main** branch drop-down bar will reflect your new branch and display the new branch name.
-
-6. Wait about 20 seconds then refresh this page (the one you're following instructions from). [GitHub Actions](https://docs.github.com/en/actions) will automatically update to the next step.
-
-<footer>
-
-<!--
-  <<< Author notes: Footer >>>
-  Add a link to get support, GitHub status page, code of conduct, license link.
--->
-
----
-
-Get help: [Post in our discussion board](https://github.com/orgs/skills/discussions/categories/introduction-to-github) &bull; [Review the GitHub status page](https://www.githubstatus.com/)
-
-&copy; 2024 GitHub &bull; [Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md) &bull; [MIT License](https://gh.io/mit)
-
-</footer>
+1. Hoshuyama, Osamu, Akihiko SUGIYAMA, and Akihiro HIRANO. "A robust adaptive beamformer with a blocking matrix using coefficient-constrained adaptive filters." *IEICE transactions on fundamentals of electronics, communications and computer sciences* 82.4 (1999): 640-647.
